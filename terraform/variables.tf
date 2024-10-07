@@ -15,7 +15,7 @@ variable "secret_key" {
 
 variable "domain_suffix"{
     description = "Suffix for the domain of the app."
-    default = ".io"
+    default = ".com"
 }
 
 variable "aws_region" {
