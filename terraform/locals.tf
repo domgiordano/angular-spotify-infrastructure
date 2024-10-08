@@ -9,6 +9,13 @@ locals {
     }
 
 
+ # LAMBDAS
+ lambda_variables = {
+   APP_NAME = var.app_name
+   DYNAMODB_KMS_ALIAS = aws_kms_alias.dynamodb.name
+   WRAPPED_TABLE_NAME = aws_dynamodb_table.wrapped.id
+ }
+
  #SECRETS
   access_key = var.access_key #jsondecode(data.aws_secretsmanager_secret_version.access_key.secret_string)["value"]
   secret_key = var.secret_key #jsondecode(data.aws_secretsmanager_secret_version.secret_key.secret_string)["value"]
