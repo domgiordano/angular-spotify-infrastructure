@@ -1,11 +1,12 @@
 # Hosted Zone Data Source
 
-resource "aws_route53_zone" "web_zone"{
-    name = local.domain_name
+data "aws_route53_zone" "web_zone"{
+    private_zone = false
+    zone_id = "Z029755811OS3QFPFETU7"
 }
 
 resource "aws_route53_record" "web_app" {
-  zone_id = aws_route53_zone.web_zone.zone_id
+  zone_id = data.aws_route53_zone.web_zone.zone_id
   name = local.domain_name
   type = "A"
   alias {
