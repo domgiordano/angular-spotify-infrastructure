@@ -3,7 +3,7 @@
 data "aws_vpc" "managed_vpc"{
     filter {
         name = "tag:Name"
-        values = ["managed-${var.app_name}"]
+        values = ["${var.app_name}-managed"]
     }
 }
 
