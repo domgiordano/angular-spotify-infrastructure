@@ -61,7 +61,10 @@ resource "aws_api_gateway_deployment" "api_deploy" {
    create_before_destroy = true
  }
   depends_on = [
-    aws_api_gateway_resource.wrapped_resource
+    aws_api_gateway_resource.wrapped_resource,
+    module.get_wrapped_endpoint,
+    module.post_wrapped_endpoint,
+    module.put_wrapped_endpoint
   ]
 }
 
@@ -113,4 +116,83 @@ resource "aws_api_gateway_resource" "wrapped_resource" {
   path_part   = "wrapped"
   parent_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.api_gateway.id
+}
+
+# GET /wrapped/data
+module "get_wrapped_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = aws_api_gateway_resource.wrapped_resource.id
+  path_part               = "data"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.wrapped.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# POST /wrapped/data
+module "post_wrapped_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = module.get_wrapped_endpoint.api_gateway_resource_id
+  modify_api_resource     = true
+  http_method             = "POST"
+  allow_methods           = ["POST"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.wrapped.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# PUT /wrapped/data
+module "put_wrapped_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = module.get_wrapped_endpoint.api_gateway_resource_id
+  modify_api_resource     = true
+  http_method             = "PUT"
+  allow_methods           = ["PUT"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.wrapped.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# AWS Permissions /wrapped
+resource "aws_lambda_permission" "wrapped_data_post_permission"{
+  statement_id  = "AllowPostWrappedData"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.wrapped.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/POST/${aws_api_gateway_resource.wrapped_resource.path_part}/data"
+}
+
+resource "aws_lambda_permission" "wrapped_data_get_permission"{
+  statement_id  = "AllowGetWrappedData"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.wrapped.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/GET/${aws_api_gateway_resource.wrapped_resource.path_part}/data"
+}
+
+resource "aws_lambda_permission" "wrapped_data_put_permission"{
+  statement_id  = "AllowPutWrappedData"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.wrapped.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/PUT/${aws_api_gateway_resource.wrapped_resource.path_part}/data"
 }

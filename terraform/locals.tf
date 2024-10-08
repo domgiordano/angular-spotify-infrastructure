@@ -16,6 +16,9 @@ locals {
    WRAPPED_TABLE_NAME = aws_dynamodb_table.wrapped.id
  }
 
+ # API GW
+ api_allow_headers = ["Authorization", "Content-Type", "X-Amz-Date", "X-Amz-Security-Token", "X-Api-Key", "Origin", "Accept", "Access-Control-Allow-Origin", "Accept-Language"]
+
  #SECRETS
   access_key = var.access_key #jsondecode(data.aws_secretsmanager_secret_version.access_key.secret_string)["value"]
   secret_key = var.secret_key #jsondecode(data.aws_secretsmanager_secret_version.secret_key.secret_string)["value"]
