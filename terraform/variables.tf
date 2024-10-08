@@ -15,7 +15,7 @@ variable "secret_key" {
 
 variable "domain_suffix"{
     description = "Suffix for the domain of the app."
-    default = ".io"
+    default = ".com"
 }
 
 variable "aws_region" {
@@ -69,4 +69,15 @@ variable "enable_cloudfront_cache" {
   type        = bool
   default     = true
   description = "This variable controls the cloudfront cache. Setting this to false will set the default_ttl and max_ttl values to zero"
+}
+
+# Lambda
+variable "lambda_runtime" {
+  type = string
+  default = "python3.12"
+}
+
+variable "lambda_trace_mode"{
+  type = string
+  default = "active"
 }

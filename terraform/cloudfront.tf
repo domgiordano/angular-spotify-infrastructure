@@ -5,8 +5,8 @@
 #-------------------------------------
 
 resource "aws_cloudfront_origin_access_control" "web_app" {
-  name                              = "oac-for-${local.domain_name}"  # this should be unique for teams that use the module multiple times
-  description                       = "OAC for S3 bucket ${local.domain_name}"
+  name                              = "oac-for-${var.app_name}"  # this should be unique for teams that use the module multiple times
+  description                       = "OAC for S3 bucket ${var.app_name}"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
@@ -72,7 +72,7 @@ resource "aws_cloudfront_distribution" "web_app" {
 
 
 resource "aws_cloudfront_response_headers_policy" "web_app" {
-  name = "security-headers-policy-for-${local.domain_name}"  # this should be unique for teams that use the module multiple times
+  name = "security-headers-policy-for-${var.app_name}"  # this should be unique for teams that use the module multiple times
   security_headers_config {
     content_type_options {
       override = true

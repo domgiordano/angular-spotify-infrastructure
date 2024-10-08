@@ -68,6 +68,11 @@ resource "aws_kms_key" "web_app" {
   )
 }
 resource "aws_kms_alias" "web_app" {
-  name          = "alias/kms-for-${var.app_name}"  # this should be unique for teams that use the module multiple times
+  name          = "alias/kms-for-${var.app_name}"
+  target_key_id = aws_kms_key.web_app.key_id
+}
+
+resource "aws_kms_alias" "dynamodb" {
+  name          = "alias/dynamodb"
   target_key_id = aws_kms_key.web_app.key_id
 }
