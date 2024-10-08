@@ -74,7 +74,7 @@ variable "enable_cloudfront_cache" {
 # Lambda
 variable "lambda_runtime" {
   type = string
-  default = "python3.12"
+  default = "python3.10"
 }
 
 variable "lambda_trace_mode"{
