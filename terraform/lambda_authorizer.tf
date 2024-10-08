@@ -1,5 +1,5 @@
 ## Resources for API Gateway Lambda Authorization
-resource "aws_lambda_function" "lambda_authorizer" {
+resource "aws_lambda_function" "authorizer" {
   function_name     = "${var.app_name}-authorizer"
   description       = "Lambda Authorizer for ${var.app_name}"
   filename          = "./templates/lambda_stub.zip"
@@ -29,7 +29,6 @@ resource "aws_lambda_function" "lambda_authorizer" {
       description,
       filename,
       source_code_hash,
-      source_code_size,
       layers
     ]
   }
@@ -43,7 +42,7 @@ resource "aws_lambda_function" "lambda_authorizer" {
 resource "aws_api_gateway_authorizer" "lambda_authorizer" {
   name                   = "${var.app_name}-Api-Gateway-Lambda-Authorizer"
   rest_api_id            = aws_api_gateway_rest_api.api_gateway.id
-  authorizer_uri         = aws_lambda_function.lambda_authorizer.invoke_arn
+  authorizer_uri         = aws_lambda_function.authorizer.invoke_arn
   authorizer_credentials = aws_iam_role.lambda_role.arn
 }
 
@@ -51,6 +50,6 @@ resource "aws_api_gateway_authorizer" "lambda_authorizer" {
 resource "aws_lambda_permission" "lambda_authorizer_handler_permission" {
   statement_id  = "AllowExecFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_authorizer.function_name
+  function_name = aws_lambda_function.authorizer.function_name
   principal     = "apigateway.amazonaws.com"
 }

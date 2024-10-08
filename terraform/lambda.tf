@@ -1,6 +1,6 @@
-resource "aws_lambda_function" "authentication" {
+resource "aws_lambda_function" "wrapped" {
 
-  function_name     = "${var.app_name}-authentication"
+  function_name     = "${var.app_name}-wrapped"
   filename          = "./templates/lambda_stub.zip"
   source_code_hash  = filebase64sha256("./templates/lambda_stub.zip")
   handler           = "handler.handler"
@@ -18,7 +18,7 @@ resource "aws_lambda_function" "authentication" {
     security_group_ids = [data.aws_security_group.lambda_sg.id]
   }
 
-  tags = merge(local.standard_tags, tomap({"name" = "${var.app_name}-authentication"}))
+  tags = merge(local.standard_tags, tomap({"name" = "${var.app_name}-wrapped"}))
 
 
 
@@ -33,7 +33,6 @@ resource "aws_lambda_function" "authentication" {
       description,
       filename,
       source_code_hash,
-      source_code_size,
       layers
     ]
   }

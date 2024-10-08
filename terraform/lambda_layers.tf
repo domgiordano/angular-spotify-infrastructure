@@ -12,8 +12,7 @@ resource "aws_lambda_layer_version" "lambda_layer" {
     ignore_changes = [
       description,
       filename,
-      source_code_hash,
-      source_code_size,
+      source_code_hash
     ]
   }
 }

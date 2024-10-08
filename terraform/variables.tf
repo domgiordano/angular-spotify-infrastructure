@@ -79,5 +79,5 @@ variable "lambda_runtime" {
 
 variable "lambda_trace_mode"{
   type = string
-  default = "active"
+  default = "Active"
 }
