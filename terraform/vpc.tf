@@ -11,7 +11,7 @@ data "aws_security_group" "lambda_sg"{
     vpc_id = data.aws_vpc.managed_vpc.id
     filter {
         name = "tag:Name"
-        values = ["lamdba-sg"]
+        values = ["lambda-sg"]
     }
 }
 
