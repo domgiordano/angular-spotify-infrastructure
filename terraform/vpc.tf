@@ -90,7 +90,9 @@ resource "aws_nat_gateway" "nat" {
 }
 
 resource "aws_eip" "nat_eip" {
-  domain = "vpc"
+  tags = {
+    Name = "${var.app_name}-nat-eip"
+  }
 }
 
 resource "aws_route_table" "private_route_table" {
