@@ -15,8 +15,8 @@ resource "aws_lambda_function" "authorizer" {
     variables = local.lambda_variables
   }
   vpc_config {
-    subnet_ids         = data.aws_subnets.private_subnet.ids
-    security_group_ids = [data.aws_security_group.lambda_sg.id]
+    subnet_ids         = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet2.id]
+    security_group_ids = [aws_security_group.lambda_sg.id]
   }
   tags = merge(local.standard_tags, tomap({"name" = "${var.app_name}-authorizer"}))
 
