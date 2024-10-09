@@ -13,6 +13,16 @@ variable "secret_key" {
   sensitive = true
 }
 
+variable "client_id" {
+  description = "Spotify Web API Client ID"
+  sensitive = true
+}
+
+variable "client_secret" {
+  description = "Spotify Web API Client Secret"
+  sensitive = true
+}
+
 variable "api_secret_key" {
   description = "API Secret Key for FE / BE to use"
   sensitive = true
