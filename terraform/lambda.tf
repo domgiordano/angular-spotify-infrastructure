@@ -42,3 +42,11 @@ resource "aws_lambda_function" "wrapped" {
     aws_iam_role.lambda_role
   ]
 }
+
+resource "aws_lambda_permission" "chron_job" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.wrapped.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.wrapped_schedule.arn
+}
