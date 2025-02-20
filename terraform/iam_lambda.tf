@@ -172,17 +172,16 @@ data "aws_iam_policy_document" "lambda_role_policy" {
       "lambda:ListVersionsByFunction"
     ]
     resources = [
-      "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:function:${var.app_name}*",
-      "arn:aws:s3:::duke-energy-dp-cis-uplight-use1-data-raw"
+      "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:function:${var.app_name}*"
     ]
   }
-  statement {
-    effect    = "Allow"
-    actions   = ["execute-api:Invoke"]
-    resources = [
-      "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:${aws_api_gateway_rest_api.api_gateway.id}/*/*/*"
-    ]
-  }
+  # statement {
+  #   effect    = "Allow"
+  #   actions   = ["execute-api:Invoke"]
+  #   resources = [
+  #     "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.web_app_account.account_id}:${aws_api_gateway_rest_api.api_gateway.id}/*/*/*"
+  #   ]
+  # }
   statement {
     effect  = "Allow"
     actions = [
