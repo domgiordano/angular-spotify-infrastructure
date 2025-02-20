@@ -44,25 +44,25 @@ resource "aws_kms_key" "web_app" {
               "kms:ViaService": "s3.${var.aws_region}.amazonaws.com"
             }
           }
-        },
-        {
-          "Sid": "CloudFront key access",
-          "Effect": "Allow",
-          "Principal": {
-            "Service": [
-              "cloudfront.amazonaws.com"
-            ]
-          },
-          "Action": [
-            "kms:Decrypt"
-          ],
-          "Resource": "*",
-          "Condition": {
-            "StringEquals": {
-              "aws:SourceArn": aws_cloudfront_distribution.web_app.arn
-            }
-          }
         }
+        # {
+        #   "Sid": "CloudFront key access",
+        #   "Effect": "Allow",
+        #   "Principal": {
+        #     "Service": [
+        #       "cloudfront.amazonaws.com"
+        #     ]
+        #   },
+        #   "Action": [
+        #     "kms:Decrypt"
+        #   ],
+        #   "Resource": "*",
+        #   "Condition": {
+        #     "StringEquals": {
+        #       "aws:SourceArn": aws_cloudfront_distribution.web_app.arn
+        #     }
+        #   }
+        # }
       ]
     }
   )
