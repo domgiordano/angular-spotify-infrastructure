@@ -25,3 +25,16 @@ resource "aws_cloudwatch_event_target" "wrapped_target" {
   target_id = "${var.app_name}-wrapped-target-id"
   arn       = aws_lambda_function.wrapped.arn
 }
+
+## CHRON JOB - RELEASE RADAR
+resource "aws_cloudwatch_event_rule" "release_radar_schedule" {
+  name        ="${var.app_name}-release-radar-schedule"
+  description = "Trigger Release Radar Lambda function on every Friday at 4AM"
+  schedule_expression = "cron(0 9 ? * FRI *)"  # Runs at 4AM Eastern on every Friday
+}
+
+resource "aws_cloudwatch_event_target" "release_radar_target" {
+  rule      = aws_cloudwatch_event_rule.release_radar_schedule.name
+  target_id = "${var.app_name}-release-radar-target-id"
+  arn       = aws_lambda_function.release_radar.arn
+}
