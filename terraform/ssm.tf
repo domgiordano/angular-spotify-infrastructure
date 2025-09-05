@@ -51,6 +51,6 @@ resource "aws_ssm_parameter" "api_id"{
     name        = "/${var.app_name}/api/API_ID"
     description = "Spotify Web API ID"
     type        = "SecureString"
-    value       = aws_api_gateway_rest_api.rest_api.id
+    value       = aws_api_gateway_rest_api.api_gateway.id
     tags        = merge(local.standard_tags, tomap({"name" = "${var.app_name}-api-id"}))
 }
