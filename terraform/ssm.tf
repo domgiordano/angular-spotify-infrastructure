@@ -40,7 +40,7 @@ resource "aws_ssm_parameter" "api_secret_key"{
 }
 
 resource "aws_ssm_parameter" "api_auth_token"{
-    name        = "/${var.app_name}/spotify/API_AUTH_TOKEN"
+    name        = "/${var.app_name}/api/API_AUTH_TOKEN"
     description = "Spotify Web API Auth Token"
     type        = "SecureString"
     value       = var.api_access_token
