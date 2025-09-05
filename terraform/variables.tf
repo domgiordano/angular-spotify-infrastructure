@@ -23,6 +23,11 @@ variable "client_secret" {
   sensitive = true
 }
 
+variable  api_access_token {
+  description = "API access token"
+  sensitive   = true
+}
+
 variable "api_secret_key" {
   description = "API Secret Key for FE / BE to use"
   sensitive = true
