@@ -62,9 +62,11 @@ resource "aws_api_gateway_deployment" "api_deploy" {
  }
   depends_on = [
     aws_api_gateway_resource.wrapped_resource,
+    aws_api_gateway_resource.update_user_table_resource,
     module.get_wrapped_endpoint,
     module.post_wrapped_endpoint,
-    module.put_wrapped_endpoint
+    module.put_wrapped_endpoint,
+    module.post_update_user_table_endpoint
   ]
 }
 
@@ -119,13 +121,13 @@ resource "aws_api_gateway_resource" "update_user_table_resource" {
 }
 
 # POST /update-user-table
-module "post_update_user_table_resource_endpoint" {
+module "post_update_user_table_endpoint" {
   source                  = "./modules/api_gateway"
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
   parent_resource_id      = aws_api_gateway_resource.update_user_table_resource.id
   modify_api_resource     = true
   http_method             = "POST"
-  allow_methods           = ["POST"]
+  allow_methods           = ["POST", "OPTIONS"]
   allow_headers           = local.api_allow_headers
   integration_type        = "AWS_PROXY"
   integration_http_method = "POST"
