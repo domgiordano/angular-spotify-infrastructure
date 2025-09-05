@@ -62,7 +62,7 @@ resource "aws_api_gateway_deployment" "api_deploy" {
  }
   depends_on = [
     aws_api_gateway_resource.wrapped_resource,
-    aws_api_gateway_resource.update_user_table_resource,
+    aws_api_gateway_resource.user_resource,
     module.get_wrapped_endpoint,
     module.post_wrapped_endpoint,
     module.put_wrapped_endpoint,
@@ -111,11 +111,11 @@ resource "aws_api_gateway_gateway_response" "api_server_error_response" {
 
 #**********************
 # UPDATE USER TABLE
-# /update-user-table
+# /user/update-user-table
 #**********************
 
-resource "aws_api_gateway_resource" "update_user_table_resource" {
-  path_part   = "update-user-table"
+resource "aws_api_gateway_resource" "user_resource" {
+  path_part   = "user"
   parent_id   = aws_api_gateway_rest_api.api_gateway.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.api_gateway.id
 }
@@ -123,11 +123,11 @@ resource "aws_api_gateway_resource" "update_user_table_resource" {
 # POST /update-user-table
 module "post_update_user_table_endpoint" {
   source                  = "./modules/api_gateway"
+  path_part               = "update-user-table"
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
-  parent_resource_id      = aws_api_gateway_resource.update_user_table_resource.id
+  parent_resource_id      = aws_api_gateway_resource.user_resource.id
   modify_api_resource     = true
   http_method             = "POST"
-  allow_methods           = ["POST", "OPTIONS"]
   allow_headers           = local.api_allow_headers
   integration_type        = "AWS_PROXY"
   integration_http_method = "POST"
@@ -144,7 +144,7 @@ resource "aws_lambda_permission" "update_user_table_data_post_permission"{
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.update_user_table.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/POST/${aws_api_gateway_resource.update_user_table_resource.path_part}"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/POST/${aws_api_gateway_resource.user_resource.path_part}"
 }
 
 #**********************
