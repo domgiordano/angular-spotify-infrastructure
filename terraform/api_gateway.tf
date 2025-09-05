@@ -66,7 +66,8 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     module.get_wrapped_endpoint,
     module.post_wrapped_endpoint,
     module.put_wrapped_endpoint,
-    module.post_update_user_table_endpoint
+    module.post_user_table_endpoint,
+    module.get_user_table_endpoint
   ]
 }
 
@@ -111,7 +112,7 @@ resource "aws_api_gateway_gateway_response" "api_server_error_response" {
 
 #**********************
 # UPDATE USER TABLE
-# /user/update-user-table
+# /user/user-table
 #**********************
 
 resource "aws_api_gateway_resource" "user_resource" {
@@ -120,14 +121,14 @@ resource "aws_api_gateway_resource" "user_resource" {
   rest_api_id = aws_api_gateway_rest_api.api_gateway.id
 }
 
-# POST /update-user-table
-module "post_update_user_table_endpoint" {
+# GET /user/user-table
+module "get_user_table_endpoint" {
   source                  = "./modules/api_gateway"
-  path_part               = "update-user-table"
   rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
   parent_resource_id      = aws_api_gateway_resource.user_resource.id
-  modify_api_resource     = true
-  http_method             = "POST"
+  path_part               = "user-table"
+  http_method             = "GET"
+  allow_methods           = ["GET", "OPTIONS"]
   allow_headers           = local.api_allow_headers
   integration_type        = "AWS_PROXY"
   integration_http_method = "POST"
@@ -138,13 +139,38 @@ module "post_update_user_table_endpoint" {
   allow_origin            = "*"
 }
 
-# AWS Permissions /update-user-table-resource
+# POST /user/user-table
+module "post_user_table_endpoint" {
+  source                  = "./modules/api_gateway"
+  rest_api_id             = aws_api_gateway_rest_api.api_gateway.id
+  parent_resource_id      = module.get_user_table_endpoint.api_gateway_resource_id
+  modify_api_resource     = true
+  http_method             = "POST"
+  allow_methods           = ["POST"]
+  allow_headers           = local.api_allow_headers
+  integration_type        = "AWS_PROXY"
+  integration_http_method = "POST"
+  uri                     = aws_lambda_function.update_user_table.invoke_arn
+  authorization           = "CUSTOM"
+  authorizer_id           = aws_api_gateway_authorizer.lambda_authorizer.id
+  standard_tags           = local.standard_tags
+  allow_origin            = "*"
+}
+
+# AWS Permissions - user table
 resource "aws_lambda_permission" "update_user_table_data_post_permission"{
   statement_id  = "AllowPostUpdateUserTable"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.update_user_table.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/POST/${aws_api_gateway_resource.user_resource.path_part}"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/POST/${aws_api_gateway_resource.user_resource.path_part}/user-table"
+}
+resource "aws_lambda_permission" "get_user_table_data_post_permission"{
+  statement_id  = "AllowGetUpdateUserTable"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.update_user_table.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/GET/${aws_api_gateway_resource.user_resource.path_part}/user-table"
 }
 
 #**********************
