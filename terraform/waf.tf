@@ -193,5 +193,5 @@ resource "aws_wafv2_web_acl" "cloudfront_waf_web_acl" {
 # Association of WAF with the API Gateway
 resource "aws_wafv2_web_acl_association" "api_gateway_association" {
   web_acl_arn  = aws_wafv2_web_acl.waf_api_gateway_acl.arn
-  resource_arn = aws_api_gateway_rest_api.api_gateway.execution_arn
+  resource_arn = aws_api_gateway_rest_api.api_gateway.arn
 }
