@@ -101,3 +101,8 @@ variable "lambda_trace_mode"{
   type = string
   default = "Active"
 }
+
+variable "lambda_aiohttp_active"{
+  type = bool
+  default = false
+}
