@@ -30,7 +30,7 @@ resource "aws_cloudwatch_event_target" "wrapped_target" {
 resource "aws_cloudwatch_event_rule" "release_radar_schedule" {
   name        ="${var.app_name}-release-radar-schedule"
   description = "Trigger Release Radar Lambda function on every Friday at 4AM"
-  schedule_expression = "cron(0 13 ? * FRI *)"  # Runs at 9AM Eastern on every Friday
+  schedule_expression = "cron(0 12 ? * FRI *)"  # Runs at 8AM Eastern on every Friday
 }
 
 resource "aws_cloudwatch_event_target" "release_radar_target" {
